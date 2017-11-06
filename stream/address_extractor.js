@@ -184,6 +184,11 @@ module.exports = function(){
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
     if( isNamedPoi ){
+      var tags = doc.getMeta('tags');
+      if (tags && tags.public_transport === 'station') {
+        doc.setType('station');
+        doc.setLayer('station');
+      }
       this.push( doc );
     }
 
