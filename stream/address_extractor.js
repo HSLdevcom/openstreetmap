@@ -102,7 +102,18 @@ module.exports = function(){
     // create a new record for street addresses
     if( isAddress ){
       var record;
+      var popularity;
 
+      // boost popularity of explicit address points at entrances and gates
+      if (tags) {
+        if (tags.barrier === 'gate') {
+          popularity=4;
+        } else if (tags.entrance === 'main') {
+          popularity=3;
+        } else if (tags.entrance === 'yes') {
+          popularity=2;
+        }
+      }
       // accept semi-colon delimited house numbers
       // ref: https://github.com/pelias/openstreetmap/issues/21
       var streetnumbers = doc.address_parts.number.split(';').map(Function.prototype.call, String.prototype.trim);
@@ -133,6 +144,9 @@ module.exports = function(){
           // copy meta data (but maintain the id & type assigned above)
           record._meta = extend( true, {}, doc._meta, { id: record.getId(), type: record.getType() } );
 
+          if (popularity) {
+            record.setPopularity(popularity);
+          }
           // multilang support for addresses
           for( var tag in tags ) {
             var suffix = getStreetSuffix(tag);
