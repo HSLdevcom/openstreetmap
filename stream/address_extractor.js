@@ -97,6 +97,7 @@ module.exports = function(){
     var isNamedPoi = hasValidName( doc );
     var isAddress = hasValidAddress( doc );
     var houseName = getHouseName( doc );
+    var tags = doc.getMeta('tags');
 
     // create a new record for street addresses
     if( isAddress ){
@@ -133,7 +134,6 @@ module.exports = function(){
           record._meta = extend( true, {}, doc._meta, { id: record.getId(), type: record.getType() } );
 
           // multilang support for addresses
-          var tags = doc.getMeta('tags');
           for( var tag in tags ) {
             var suffix = getStreetSuffix(tag);
             if (suffix ) {
@@ -184,10 +184,10 @@ module.exports = function(){
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
     if( isNamedPoi ){
-      var tags = doc.getMeta('tags');
       if (tags && tags.public_transport === 'station') {
         doc.setType('station');
         doc.setLayer('station');
+        doc.setPopularity(1000000); // same as in gtfs stations
       }
       this.push( doc );
     }
