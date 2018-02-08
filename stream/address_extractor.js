@@ -62,6 +62,8 @@ function hasValidName( doc ){
 
 var houseNameValidator = new RegExp('[a-zA-Z]{3,}');
 
+var minorBuildings = ['barn', 'cabin', 'shed', 'garage', 'hut', 'carbage_shed'];
+
 function getHouseName( doc ){
   if( !isObject( doc ) ){ return null; }
   if( !isObject( doc.address_parts ) ){ return null; }
@@ -97,11 +99,25 @@ module.exports = function(){
     var isNamedPoi = hasValidName( doc );
     var isAddress = hasValidAddress( doc );
     var houseName = getHouseName( doc );
+    var tags = doc.getMeta('tags');
 
     // create a new record for street addresses
     if( isAddress ){
       var record;
+      var popularity;
 
+      // boost popularity of explicit address points at entrances and gates
+      if (tags) {
+        if (tags.barrier === 'gate') {
+          popularity=40;
+        } else if (tags.entrance === 'main') {
+          popularity=30;
+        } else if (tags.entrance === 'yes') {
+          popularity=20;
+        } else if(tags.building &&  minorBuildings.indexOf(tags.building) !== -1) {
+          popularity=5;
+        }
+      }
       // accept semi-colon delimited house numbers
       // ref: https://github.com/pelias/openstreetmap/issues/21
       var streetnumbers = doc.address_parts.number.split(';').map(Function.prototype.call, String.prototype.trim);
@@ -132,8 +148,10 @@ module.exports = function(){
           // copy meta data (but maintain the id & type assigned above)
           record._meta = extend( true, {}, doc._meta, { id: record.getId(), type: record.getType() } );
 
+          if (popularity) {
+            record.setPopularity(popularity);
+          }
           // multilang support for addresses
-          var tags = doc.getMeta('tags');
           for( var tag in tags ) {
             var suffix = getStreetSuffix(tag);
             if (suffix ) {
@@ -184,10 +202,10 @@ module.exports = function(){
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
     if( isNamedPoi ){
-      var tags = doc.getMeta('tags');
       if (tags && tags.public_transport === 'station') {
         doc.setType('station');
         doc.setLayer('station');
+        doc.setPopularity(1000000); // same as in gtfs stations
       }
       this.push( doc );
     }
