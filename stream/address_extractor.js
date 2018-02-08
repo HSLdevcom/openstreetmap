@@ -62,6 +62,8 @@ function hasValidName( doc ){
 
 var houseNameValidator = new RegExp('[a-zA-Z]{3,}');
 
+var minorBuildings = ['barn', 'cabin', 'shed', 'garage', 'hut', 'carbage_shed'];
+
 function getHouseName( doc ){
   if( !isObject( doc ) ){ return null; }
   if( !isObject( doc.address_parts ) ){ return null; }
@@ -107,11 +109,13 @@ module.exports = function(){
       // boost popularity of explicit address points at entrances and gates
       if (tags) {
         if (tags.barrier === 'gate') {
-          popularity=4;
+          popularity=40;
         } else if (tags.entrance === 'main') {
-          popularity=3;
+          popularity=30;
         } else if (tags.entrance === 'yes') {
-          popularity=2;
+          popularity=20;
+        } else if(tags.building &&  minorBuildings.indexOf(tags.building) !== -1) {
+          popularity=5;
         }
       }
       // accept semi-colon delimited house numbers
