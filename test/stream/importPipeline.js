@@ -10,11 +10,10 @@ module.exports.tests.interface = function(test, common) {
   var streams = [
     'pbfParser',
     'docConstructor',
-    'docDenormalizer',
+    'blacklistStream',
     'tagMapper',
     'adminLookup',
     'addressExtractor',
-    'deduper',
     'categoryMapper',
     'dbMapper',
     'elasticsearch',

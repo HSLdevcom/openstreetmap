@@ -4,10 +4,10 @@
   in to model.Document() objects which the rest of the pipeline expect to consume.
 **/
 
-var through = require('through2');
-var Document = require('pelias-model').Document;
-var peliasLogger = require( 'pelias-logger' ).get( 'openstreetmap' );
-var _ = require('lodash');
+const through = require('through2');
+const Document = require('pelias-model').Document;
+const peliasLogger = require( 'pelias-logger' ).get( 'openstreetmap' );
+const _ = require('lodash');
 
 module.exports = function(){
 
@@ -40,10 +40,17 @@ module.exports = function(){
         }
       }
 
-      // Set noderefs (for ways)
       if( item.hasOwnProperty('BBoxMin') && item.hasOwnProperty('BBoxMax') ){
-        doc.setMeta( 'BBoxMin', item.BBoxMin );
-        doc.setMeta( 'BBoxMax', item.BBoxMax );
+        doc.setBoundingBox({
+          upperLeft: {
+            lat: item.BBoxMin.Lat,
+            lon: item.BBoxMin.Lon
+          },
+          lowerRight: {
+            lat: item.BBoxMax.Lat,
+            lon: item.BBoxMax.Lon
+          }
+        });
       }
 
       // Store osm tags as a property inside _meta

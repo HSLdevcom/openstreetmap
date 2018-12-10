@@ -213,9 +213,6 @@ module.exports = function(){
     if ( isAddress && isNamedPoi ) {
       peliasLogger.verbose('[address_extractor] duplicating a venue with address');
     }
-    else if ( !isAddress && !isNamedPoi && !houseName) {
-      peliasLogger.debug('[address_extractor] Invalid doc not pushed downstream: ', JSON.stringify( doc, null, 2 ));
-    }
 
     return next();
 

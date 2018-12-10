@@ -5,7 +5,7 @@
 **/
 
 var through = require('through2'),
-    trimmer = require('trimmer'),
+    _ = require('lodash'),
     merge = require('merge'),
     peliasLogger = require( 'pelias-logger' ).get( 'openstreetmap' );
 
@@ -40,6 +40,7 @@ module.exports = function(){
       }
 
       var names = {};
+      var aliases = [];
 
       // Unfortunately we need to iterate over every tag,
       // so we only do the iteration once to save CPU.
@@ -56,7 +57,6 @@ module.exports = function(){
           }
           names[suffix] = val1;
         }
-
         // Map name data from our name mapping schema
         else if( tag in NAME_SCHEMA ){
           var mappedTag = NAME_SCHEMA[tag];
@@ -64,7 +64,11 @@ module.exports = function(){
           if(!val2) {
             continue;
           }
-          names[mappedTag] = val2;
+          if( tag === NAME_SCHEMA._primary || mappedTag !== 'default' ) {
+            names[mappedTag] = val2;
+          } else if ( 'default' === mappedTag ) {
+            aliases.push( val2 );
+          }
         }
 
         // Map address data from our address mapping schema
@@ -75,8 +79,9 @@ module.exports = function(){
           }
         }
       }
+
       // process names
-      var defaultName = names['default'];
+      var defaultName = names['default'] || aliases[0];
 
       if (!defaultName && languages) { // api likes default name
         for(var i in languages) {
@@ -88,11 +93,27 @@ module.exports = function(){
       }
       if (defaultName) {
         doc.setName( 'default', defaultName);
+      }
+      for(var prop in names) {
+        if ( names[prop] !== defaultName) {
+          // don't set duplicates. A missing language defaults to name.default.
+          doc.setName( prop, names[prop] );
+        }
+      }
+      for(var j in aliases) {
+        if(aliases[j] !== defaultName) {
+          doc.setNameAlias( 'default', aliases[j] );
+        }
+      }
 
-        for(var prop in names) {
-          if ( names[prop] !== defaultName) {
-            // don't set duplicates. A missing language defaults to name.default.
-            doc.setName( prop, names[prop] );
+      // Import airport codes as aliases
+      if( tags.hasOwnProperty('aerodrome') || tags.hasOwnProperty('aeroway') ){
+        if( tags.hasOwnProperty('iata') ){
+          var iata = trim( tags.iata );
+          if( iata ){
+            doc.setNameAlias( 'default', iata );
+            doc.setNameAlias( 'default', `${iata} Airport` );
+            doc.setPopularity(10000);
           }
         }
       }
@@ -116,7 +137,7 @@ module.exports = function(){
 
 // Clean string of leading/trailing junk chars
 function trim( str ){
-  return trimmer( str, '#$%^*<>-=_{};:",./?\t\n\' ' );
+  return _.trim( str, '#$%^*<>-=_{};:",./?\t\n\' ' );
 }
 
 // extract name suffix, eg for 'name:EN' return 'en'

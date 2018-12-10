@@ -1,24 +1,26 @@
 {
   "name": "pelias-openstreetmap",
-  "version": "0.0.0-semantic-release",
-  "author": "mapzen",
+  "version": "0.0.0-development",
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=1.4.3",
+    "elasticsearch": ">=1.3.4"
+  },
+  "author": "pelias",
   "description": "Pelias openstreetmap utilities",
   "homepage": "https://github.com/mapzen/pelias-openstreetmap",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "download": "node util/download_data.js",
+    "download": "./bin/download",
     "coverage": "node_modules/.bin/istanbul cover test/run.js",
-    "end-to-end": "export NODE_ENV=test && npm run pretest && node test/end-to-end.js;",
+    "end-to-end": "export NODE_ENV=test && node test/end-to-end.js;",
     "lint": "jshint .",
-    "pretest": "test/pretest.sh",
-    "start": "node --max_old_space_size=4096 index.js",
-    "test": "NODE_ENV=test npm run units",
-    "travis": "npm run check-dependencies && node ./test/travis-config.js && npm test && npm run end-to-end",
-    "units": "node test/run.js | tap-spec",
-    "validate": "npm ls",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "check-dependencies": "node_modules/.bin/npm-check --production"
+    "start": "./bin/start",
+    "test": "npm run units",
+    "travis": "node ./test/travis-config.js && npm test && npm run end-to-end",
+    "units": "./bin/test",
+    "validate": "npm ls"
   },
   "repository": {
     "type": "git",
@@ -33,54 +35,50 @@
   "bugs": {
     "url": "https://github.com/mapzen/pelias-openstreetmap/issues"
   },
-  "engines": {
-    "node": ">=4.0.0",
-    "npm": ">=1.4.3",
-    "elasticsearch": ">=1.3.4"
-  },
   "dependencies": {
+    "async": "^2.0.0",
     "combined-stream": "^1.0.5",
     "extend": "^3.0.0",
-    "fs-extra": "^4.0.0",
-    "geolib": "^2.0.17",
+    "fs-extra": "^7.0.0",
+    "geolib": "^2.0.24",
     "is-object": "^1.0.1",
     "iso-639-3": "^1.0.0",
-    "joi": "^10.1.0",
-    "lodash": "^4.16.0",
+    "joi": "^14.0.0",
+    "lodash": "^4.17.4",
     "merge": "^1.2.0",
     "pbf2json": "git://github.com/hsldevcom/pbf2json.git",
-    "pelias-address-deduplicator": "1.1.0",
-    "pelias-config": "2.12.0",
-    "pelias-dbclient": "2.2.2",
-    "pelias-logger": "0.2.0",
-    "pelias-model": "5.0.1",
-    "pelias-wof-admin-lookup": "3.10.4",
-    "through2": "^2.0.0",
-    "through2-sink": "^1.0.0",
-    "through2-spy": "^2.0.0",
-    "trimmer": "^2.0.0"
+    "pbf2json": "^5.0.0",
+    "pelias-blacklist-stream": "^1.0.0",
+    "pelias-config": "^3.3.0",
+    "pelias-dbclient": "^2.5.6",
+    "pelias-logger": "^1.2.1",
+    "pelias-model": "^5.7.1",
+    "pelias-wof-admin-lookup": "^5.0.0",
+    "through2": "^3.0.0",
+    "through2-sink": "^1.0.0"
   },
   "devDependencies": {
-    "async": "^2.0.0",
     "colors": "^1.1.2",
-    "deep-diff": "^0.3.2",
-    "event-stream": "^3.3.2",
+    "deep-diff": "^1.0.0",
+    "event-stream": "^4.0.0",
     "istanbul": "^0.4.3",
     "jshint": "^2.8.0",
     "naivedb": "^1.0.7",
-    "npm-check": "git://github.com/orangejulius/npm-check.git#disable-update-check",
     "pelias-mock-logger": "^1.0.1",
     "precommit-hook": "^3.0.0",
-    "proxyquire": "^1.7.10",
-    "semantic-release": "^7.0.1",
+    "proxyquire": "^2.0.0",
     "taginfo": "^1.0.1",
-    "tap-spec": "^4.0.2",
+    "tap-spec": "^5.0.0",
     "tape": "^4.0.0",
     "tmp": "0.0.33"
   },
   "pre-commit": [
     "lint",
-    "test",
-    "check-dependencies"
-  ]
+    "validate",
+    "test"
+  ],
+  "release": {
+    "branch": "master",
+    "success": []
+  }
 }
