@@ -25,14 +25,14 @@
 
 var OSM_NAMING_SCHEMA = {
   'name':             'default',
-  'loc_name':         'default',
-  'alt_name':         'default',
+  'loc_name':         'local',
+  'alt_name':         'alternative',
   'int_name':         'international',
   'nat_name':         'national',
   'official_name':    'official',
   'old_name':         'old',
   'reg_name':         'regional',
-  'short_name':       'default',
+  'short_name':       'short',
   'sorting_name':     'sorting'
 };
 
