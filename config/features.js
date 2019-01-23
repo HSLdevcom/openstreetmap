@@ -4,8 +4,13 @@
  imports. @see: https://github.com/pelias/pbf2json for more info.
 **/
 
+// default tags imported
 var tags = [
-  'addr:housenumber+addr:street',
+  'addr:housenumber+addr:street'
+];
+
+// tags corresponding to venues
+var venue_tags = [
   'addr:housename',
   'place+name', 'place+name:fi',
   'amenity+name', 'amenity+name:fi',
@@ -38,4 +43,4 @@ var tags = [
   'aeroway~airport+name', 'aeroway~airport+name:fi'
 ];
 
-module.exports = tags;
+module.exports = {tags,venue_tags};

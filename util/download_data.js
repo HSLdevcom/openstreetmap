@@ -5,7 +5,7 @@ const async = require('async');
 const child_process = require('child_process');
 const fs = require('fs-extra');
 const config = require( 'pelias-config' ).generate(require('../schema'));
-const logger = require('pelias-logger').get('download');
+const logger = require('pelias-logger').get('openstreetmap-download');
 
 if (require.main === module) {
   download((err) => {
@@ -23,7 +23,7 @@ function download(callback) {
   // if no download sources are specified, default to the planet file
   if (_.isEmpty(config.imports.openstreetmap.download)) {
     sources = [
-      'http://planet.openstreetmap.org/pbf/planet-latest.osm.pbf'
+      'https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf'
     ];
   }
   else {
