@@ -41,6 +41,26 @@ module.exports = function(){
 
       var names = {};
       var aliases = [];
+      var allNames = {}; // deduping array
+
+      var storeName = (key, value) => {
+        var val1 = trim(value);
+        if( !val1 ) {
+            return;
+        }
+        var splitNames = val1.split(';');
+        for(var name of splitNames) {
+          if(allNames[name]) {
+            continue;
+          }
+          allNames[name] = true;
+          if(names[key]) { // slot already used
+            aliases.push(name);
+          } else {
+            names[key] = name;
+          }
+        }
+      };
 
       // Unfortunately we need to iterate over every tag,
       // so we only do the iteration once to save CPU.
@@ -51,26 +71,12 @@ module.exports = function(){
         var suffix = getNameSuffix( tag );
         // set only languages we wish to support
         if( suffix && (!languages || languages.indexOf(suffix) !== -1)) {
-          var val1 = trim( tags[tag] );
-          if( !val1 ) {
-            continue;
-          }
-          names[suffix] = val1;
+          storeName(suffix, tags[tag]);
         }
         // Map name data from our name mapping schema
         else if( tag in NAME_SCHEMA ){
-          var mappedTag = NAME_SCHEMA[tag];
-          var val2 = trim( tags[tag] );
-          if(!val2) {
-            continue;
-          }
-          if( tag === NAME_SCHEMA._primary || mappedTag !== 'default' ) {
-            names[mappedTag] = val2;
-          } else if ( 'default' === mappedTag ) {
-            aliases.push( val2 );
-          }
+          storeName(NAME_SCHEMA[tag], tags[tag]);
         }
-
         // Map address data from our address mapping schema
         else if( tag in ADDRESS_SCHEMA ){
           var val3 = trim( tags[tag] );
@@ -84,8 +90,8 @@ module.exports = function(){
       var defaultName = names['default'] || aliases[0];
 
       if (!defaultName && languages) { // api likes default name
-        for(var i in languages) {
-          defaultName = names[languages[i]];
+        for(var lang of languages) {
+          defaultName = names[lang];
           if (defaultName) { // use first supported name version as default
             break;
           }
@@ -100,9 +106,9 @@ module.exports = function(){
           doc.setName( prop, names[prop] );
         }
       }
-      for(var j in aliases) {
-        if(aliases[j] !== defaultName) {
-          doc.setNameAlias( 'default', aliases[j] );
+      for(const ali of aliases) {
+        if(ali !== defaultName) {
+          doc.setNameAlias( 'default', ali );
         }
       }
 
