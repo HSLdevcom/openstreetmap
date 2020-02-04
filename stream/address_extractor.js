@@ -146,7 +146,7 @@ module.exports = function(){
 
         if( record !== undefined ){
           // copy meta data (but maintain the id & type assigned above)
-          record._meta = extend( true, {}, doc._meta, { id: record.getId(), type: record.getType() } );
+          record._meta = extend( true, {}, doc._meta, { id: record.getId() } );
 
           if (popularity) {
             record.setPopularity(popularity);
@@ -203,7 +203,6 @@ module.exports = function(){
     // note: this MUST be below the address push()
     if( isNamedPoi ){
       if (tags && tags.public_transport === 'station') {
-        doc.setType('station');
         doc.setLayer('station');
         doc.setPopularity(1000000); // same as in gtfs stations
       }
