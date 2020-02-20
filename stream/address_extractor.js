@@ -202,7 +202,7 @@ module.exports = function(){
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
     if( isNamedPoi ){
-      if (tags && tags.public_transport === 'station') {
+      if (tags && (tags.public_transport === 'station' || tags.amenity === 'bus_station')) {
         doc.setLayer('station');
         doc.setPopularity(1000000); // same as in gtfs stations
       }
