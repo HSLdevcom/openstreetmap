@@ -121,21 +121,31 @@ module.exports = function(){
       // accept semi-colon delimited house numbers
       // ref: https://github.com/pelias/openstreetmap/issues/21
       var streetnumbers = doc.address_parts.number.split(';').map(Function.prototype.call, String.prototype.trim);
-      streetnumbers.forEach( function( streetno, i ){
 
+      var unit = null;
+      if (tags) {
+        if (tags['addr:unit']) {
+          unit = ' ' + tags['addr:unit'];
+        }
+      }
+
+      streetnumbers.forEach( function( streetno, i ) {
+        let uno = unit ? streetno + unit : streetno; // add unit if available
         try {
           var newid = [ doc.getSourceId() ];
           if( i > 0 ){
-            newid.push( streetno );
-            peliasLogger.debug('[address_extractor] found multiple house numbers: ', streetnumbers);
+            newid.push( uno );
+            if (i === 1) {
+              peliasLogger.debug('[address_extractor] found multiple house numbers: ', streetnumbers);
+            }
           }
 
           // copy data to new document
           record = new Document( 'openstreetmap', 'address', newid.join(':') )
-            .setName( 'default', streetno + ' ' + doc.address_parts.street )
+            .setName( 'default', doc.address_parts.street + ' ' +  uno )
             .setCentroid( doc.getCentroid() );
 
-          setProperties( record, doc );
+          setProperties( record, doc, uno );
         }
 
         catch( e ){
@@ -155,7 +165,7 @@ module.exports = function(){
           for( var tag in tags ) {
             var suffix = getStreetSuffix(tag);
             if (suffix ) {
-              record.setName(suffix, streetno + ' ' + tags[tag] );
+              record.setName(suffix, tags[tag] + ' ' + uno);
             }
           }
           this.push( record );
@@ -163,9 +173,7 @@ module.exports = function(){
         else {
           peliasLogger.error( '[address_extractor] failed to push address downstream' );
         }
-
       }, this);
-
     }
 
     // create a new record for buildings. Try to avoid duplicates
@@ -202,7 +210,7 @@ module.exports = function(){
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
     if( isNamedPoi ){
-      if (tags && tags.public_transport === 'station') {
+      if (tags && (tags.public_transport === 'station' || tags.amenity === 'bus_station')) {
         doc.setLayer('station');
         doc.setPopularity(1000000); // same as in gtfs stations
       }
@@ -224,15 +232,18 @@ module.exports = function(){
 };
 
 // properties to map from the osm record to the pelias doc
-var addrProps = [ 'name', 'number', 'street', 'zip' ];
+var addrProps = [ 'name', 'street', 'zip' ];
 
 // call document setters and ignore non-fatal errors
-function setProperties( record, doc ){
+function setProperties( record, doc, number ){
   addrProps.forEach( function ( prop ){
     try {
       record.setAddress( prop, doc.getAddress( prop ) );
     } catch ( ex ) {}
   });
+  if (number) {
+    record.setAddress( 'number', number);
+  }
 }
 
 

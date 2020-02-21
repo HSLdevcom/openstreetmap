@@ -72,8 +72,7 @@
     "tmp": "0.0.33"
   },
   "pre-commit": [
-    "lint",
-    "test"
+    "lint"
   ],
   "release": {
     "branch": "master",
