@@ -100,11 +100,10 @@ module.exports = function(){
     var isAddress = hasValidAddress( doc );
     var houseName = getHouseName( doc );
     var tags = doc.getMeta('tags');
-
     // create a new record for street addresses
     if( isAddress ){
       var record;
-      var popularity;
+      var popularity = 10;
 
       // boost popularity of explicit address points at entrances and gates
       if (tags) {
@@ -213,6 +212,8 @@ module.exports = function(){
       if (tags && (tags.public_transport === 'station' || tags.amenity === 'bus_station')) {
         doc.setLayer('station');
         doc.setPopularity(1000000); // same as in gtfs stations
+      } else {
+        doc.setPopularity(10); // default
       }
       this.push( doc );
     }
