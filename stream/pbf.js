@@ -52,6 +52,10 @@ function config(opts){
       opts.tags = features.tags;
     }
   }
+
+  if(!opts.names){
+    opts.names = features.names;
+  }
   return opts;
 }
 
