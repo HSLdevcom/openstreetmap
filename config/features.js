@@ -7,6 +7,9 @@
 var name_schema = require('../schema/name_osm');
 var names = Object.keys(name_schema);
 var name_expression = names.concat('|'); // for name regex
+var highways = ['motorway','trunk','primary','secondary','tertiary','unclassified','track',
+                'service','residential','pedestrian','footway','living_street','cycleway','road'];
+var highway_expression = highways.concat(';'); // for name regex
 
 // address tags imported
 var tags = [
@@ -28,10 +31,10 @@ var venue_tags = [
   'place!amenity!building!shop!office!public_transport!cuisine!railway!sport!natural!tourism!leisure!' +
   'historic!man_made!landuse!waterway!aerialway!craft!military!' +
   'aeroway~terminal;aerodrome;helipad;airstrip;heliport;areodrome;spaceport;landing_strip;airfield;airport' +
-  '!highway~motorway;trunk;primary;secondary;tertiary;unclassified;service;residential;pedestrian' +
+  '!highway~' + highway_expression +
   '§#(' + name_expression + ')(:(fi|sv|en))?'
 ];
 
 names = names.concat('');
 
-module.exports = {tags, venue_tags, names};
+module.exports = {tags, venue_tags, names, highways};

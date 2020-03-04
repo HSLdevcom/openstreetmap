@@ -30,6 +30,7 @@ var peliasLogger = require( 'pelias-logger' ).get( 'openstreetmap' );
 var Document = require('pelias-model').Document;
 var geolib = require( 'geolib' );
 var config = require('pelias-config').generate().api;
+var highways = require('../config/features').highways;
 
 function hasValidAddress( doc ){
   if( !isObject( doc ) ){ return false; }
@@ -56,8 +57,16 @@ function hasValidName( doc ){
   } else {
     return !!doc.getName('default') ;
   }
-
   return false;
+}
+
+function isStreet( tags ){
+  var hwtype = tags.highway;
+
+  if (!hwtype) {
+    return false;
+  }
+  return (highways.indexOf(hwtype) !== -1);
 }
 
 var houseNameValidator = new RegExp('[a-zA-Z]{3,}');
@@ -209,19 +218,17 @@ module.exports = function(){
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
     if( isNamedPoi ){
-      if (tags && (tags.public_transport === 'station' || tags.amenity === 'bus_station')) {
+      if (tags.public_transport === 'station' || tags.amenity === 'bus_station') {
         doc.setLayer('station');
         doc.setPopularity(1000000); // same as in gtfs stations
+      } else if (isStreet(doc, tags)) {
+        doc.setLayer('street');
+        doc.setPopularity(5); // lower as default
       } else {
         doc.setPopularity(10); // default
       }
       this.push( doc );
     }
-
-    if ( isAddress && isNamedPoi ) {
-      peliasLogger.verbose('[address_extractor] duplicating a venue with address');
-    }
-
     return next();
 
   });

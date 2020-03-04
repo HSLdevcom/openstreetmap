@@ -19,7 +19,7 @@ module.exports = function(){
       }
       var uniqueId = [ item.type, item.id ].join(':');
 
-      // we need to assume it will be a venue and later if it turns out to be an address it will get changed
+      // we need to assume it will be a venue and later if it turns out to be an address or street it will get changed
       var doc = new Document( 'openstreetmap', 'venue', uniqueId );
 
       // Set latitude / longitude
