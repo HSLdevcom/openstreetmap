@@ -56,7 +56,11 @@ function config(opts){
   if(!opts.names){
     opts.names = features.names;
   }
-  return opts;
+
+  if(!opts.highways){
+    opts.highways = features.highways;
+  }
+return opts;
 }
 
 // Check path exists
