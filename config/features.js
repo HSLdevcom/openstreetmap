@@ -1,4 +1,3 @@
-
 /**
  default list of tags to extract from the pbf file when running
  imports. @see: https://github.com/shldevcom/pbf2json for more info.
@@ -6,10 +5,10 @@
 
 var name_schema = require('../schema/name_osm');
 var names = Object.keys(name_schema);
-var name_expression = names.concat('|'); // for name regex
+var name_expression = names.join('|'); // for name regex
 var highways = ['motorway','trunk','primary','secondary','tertiary','unclassified','track',
                 'service','residential','pedestrian','footway','living_street','cycleway','road'];
-var highway_expression = highways.concat(';'); // for name regex
+var highway_expression = highways.join(';'); // for name regex
 
 // address tags imported
 var tags = [
@@ -35,6 +34,7 @@ var venue_tags = [
   '§#(' + name_expression + ')(:(fi|sv|en))?'
 ];
 
-names = names.concat('');
+names = names.join(',');
+highways = highways.join(',');
 
 module.exports = {tags, venue_tags, names, highways};
