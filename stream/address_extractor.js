@@ -23,6 +23,7 @@ var Document = require('pelias-model').Document;
 var geolib = require( 'geolib' );
 var config = require('pelias-config').generate().api;
 var highways = require('../config/features').highways;
+var NAME_SCHEMA = require('../schema/name_osm');
 
 function hasValidAddress( doc ){
   if( !isObject( doc ) ){ return false; }
@@ -101,21 +102,25 @@ module.exports = function(){
     var isAddress = hasValidAddress( doc );
     var houseName = getHouseName( doc );
     var tags = doc.getMeta('tags');
+    var addressNames = {}; // for deduping
+    var popularity = 10;
+
+    if(tags.building &&  minorBuildings.indexOf(tags.building) !== -1) {
+      popularity=5;
+    }
     // create a new record for street addresses
     if( isAddress ){
       var record;
-      var popularity = 10;
+      var apop = popularity;
 
       // boost popularity of explicit address points at entrances and gates
       if (tags) {
         if (tags.barrier === 'gate') {
-          popularity=40;
+          apop = 40;
         } else if (tags.entrance === 'main') {
-          popularity=30;
+          apop = 30;
         } else if (tags.entrance === 'yes') {
-          popularity=20;
-        } else if(tags.building &&  minorBuildings.indexOf(tags.building) !== -1) {
-          popularity=5;
+          apop = 20;
         }
       }
       // accept semi-colon delimited house numbers
@@ -139,11 +144,12 @@ module.exports = function(){
               peliasLogger.debug('[address_extractor] found multiple house numbers: ', streetnumbers);
             }
           }
-
+          var name = doc.address_parts.street + ' ' +  uno;
           // copy data to new document
           record = new Document( 'openstreetmap', 'address', newid.join(':') )
-            .setName( 'default', doc.address_parts.street + ' ' +  uno )
+            .setName( 'default', name )
             .setCentroid( doc.getCentroid() );
+          addressNames[name] = true;
 
           setProperties( record, doc, uno );
         }
@@ -158,10 +164,9 @@ module.exports = function(){
           // copy meta data (but maintain the id & type assigned above)
           record._meta = extend( true, {}, doc._meta, { id: record.getId() } );
 
-          if (popularity) {
-            record.setPopularity(popularity);
-          }
-          // multilang support for addresses
+          record.setPopularity(apop);
+
+          // multilang/altname support for addresses
           for( var tag in tags ) {
             var suffix = getStreetSuffix(tag);
             if (suffix ) {
@@ -189,6 +194,7 @@ module.exports = function(){
           .setCentroid( doc.getCentroid() );
 
         setProperties( record2, doc );
+        record2.setPopularity(popularity);
       }
 
       catch( e ){
@@ -209,15 +215,15 @@ module.exports = function(){
 
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
-    if( isNamedPoi ){
+    if( isNamedPoi && !addressNames[doc.getName('default')]) {
       if (tags.public_transport === 'station' || tags.amenity === 'bus_station') {
         doc.setLayer('station');
-        doc.setPopularity(1000000); // same as in gtfs stations
+        if (tags.usage !== 'tourism') {
+          popularity = 1000000; // same as in gtfs stations
+        }
       } else if (isStreet(tags)) {
         doc.setLayer('street');
-        doc.setPopularity(5); // lower as default
-      } else {
-        doc.setPopularity(10); // default
+        doc.setId(doc.getId().replace('venue','street'));
       }
       this.push( doc );
     }
@@ -253,7 +259,10 @@ function getStreetSuffix( tag ){
   }
   // normalize suffix
   var suffix = tag.substr(12).toLowerCase();
-
+  if( suffix in NAME_SCHEMA ){
+    // Map to pelias world
+    suffix = NAME_SCHEMA[suffix];
+  }
   if (languages && languages.indexOf(suffix) === -1) { // not interested in this name version
     return false;
   }
