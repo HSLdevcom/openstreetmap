@@ -10,17 +10,9 @@
   There are a few different outcomes for this stream depending on the data contained
   in each individual document, the result can be, 0, 1 or 2 documents being emitted.
 
-  In the case of the document missing a valid doc.name.default string then it is not
-  considered to be a point-of-interest in it's own right, it will be discarded.
-
   In the case where the document contains BOTH a valid house number & street name we
   consider this record to be an address in it's own right and we clone that record,
   duplicating the data across to the new doc instance while adjusting it's id and type.
-
-  In a rare case it is possible that the record contains neither a valid name nor a valid
-  address. If this case in encountered then the parser should be modified so these records
-  are no longer passed down the pipeline; as they will simply be discarded because they are
-  not searchable.
 **/
 
 var through = require('through2');
@@ -221,7 +213,7 @@ module.exports = function(){
       if (tags.public_transport === 'station' || tags.amenity === 'bus_station') {
         doc.setLayer('station');
         doc.setPopularity(1000000); // same as in gtfs stations
-      } else if (isStreet(doc, tags)) {
+      } else if (isStreet(tags)) {
         doc.setLayer('street');
         doc.setPopularity(5); // lower as default
       } else {
