@@ -81,6 +81,7 @@ module.exports = function(){
         } else {
           // Map localized names which begin with '???name:'
           var parts = getNameParts( tag );
+
           if (!parts) {
             continue;
           }
@@ -171,17 +172,15 @@ function trim( str ){
 // if not valid, return null
 
 function getNameParts( tag ) {
-  prefixes.forEach(prefix => {
+  for(var prefix of prefixes) {
     if (tag.startsWith(prefix)) {
       // normalized suffix
       var suffix = tag.substr(prefix.length).toLowerCase();
-
       // check the suffix is in the localized key list
       if (suffix.length > 0 &&  LOCALIZED_NAME_KEYS.indexOf(suffix) !== -1) {
         return [prefix, suffix];
       }
-      return null;
     }
-  });
+  }
   return null;
 }
