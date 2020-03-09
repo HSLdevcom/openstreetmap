@@ -114,24 +114,22 @@ module.exports = function(){
       var apop = popularity;
 
       // boost popularity of explicit address points at entrances and gates
-      if (tags) {
-        if (tags.barrier === 'gate') {
-          apop = 40;
-        } else if (tags.entrance === 'main') {
-          apop = 30;
-        } else if (tags.entrance === 'yes') {
-          apop = 20;
-        }
+      if (tags.barrier === 'gate') {
+        apop = 40;
+      } else if (tags.entrance === 'main') {
+        apop = 30;
+      } else if (tags.entrance === 'yes') {
+        apop = 20;
       }
+
       // accept semi-colon delimited house numbers
       // ref: https://github.com/pelias/openstreetmap/issues/21
       var streetnumbers = doc.address_parts.number.split(';').map(Function.prototype.call, String.prototype.trim);
 
       var unit = null;
-      if (tags) {
-        if (tags['addr:unit']) {
-          unit = ' ' + tags['addr:unit'];
-        }
+
+      if (tags['addr:unit']) {
+        unit = ' ' + tags['addr:unit'];
       }
 
       streetnumbers.forEach( function( streetno, i ) {
