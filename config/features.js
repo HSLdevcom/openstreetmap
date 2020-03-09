@@ -1,6 +1,6 @@
 /**
  default list of tags to extract from the pbf file when running
- imports. @see: https://github.com/shldevcom/pbf2json for more info.
+ imports. @see: https://github.com/hldevcom/pbf2json for more info.
 **/
 
 var name_schema = require('../schema/name_osm');
