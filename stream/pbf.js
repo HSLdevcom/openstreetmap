@@ -52,7 +52,15 @@ function config(opts){
       opts.tags = features.tags;
     }
   }
-  return opts;
+
+  if(!opts.names){
+    opts.names = features.names;
+  }
+
+  if(!opts.highways){
+    opts.highways = features.highways;
+  }
+return opts;
 }
 
 // Check path exists

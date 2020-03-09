@@ -11,6 +11,8 @@ var through = require('through2'),
 
 var LOCALIZED_NAME_KEYS = require('../config/localized_name_keys');
 var NAME_SCHEMA = require('../schema/name_osm');
+var prefixes = Object.keys(NAME_SCHEMA).map(name => name + ':');
+
 var ADDRESS_SCHEMA = merge( true, false,
   require('../schema/address_tiger'),
   require('../schema/address_osm'),
@@ -40,22 +42,25 @@ module.exports = function(){
       }
 
       var names = {};
-      var aliases = [];
+      var aliases = {};
       var allNames = {}; // deduping array
 
-      var storeName = (key, value) => {
+      var storeName = (key, value, forceAlias) => {
         var val1 = trim(value);
         if( !val1 ) {
             return;
         }
         var splitNames = val1.split(';');
         for(var name of splitNames) {
-          if(allNames[name]) {
+          if(key !== 'default' && allNames[name]) {
             continue;
           }
           allNames[name] = true;
-          if(names[key]) { // slot already used
-            aliases.push(name);
+          if(names[key] || forceAlias) { // slot already used
+            if (!aliases[key]) {
+              aliases[key] = [];
+            }
+            aliases[key].push(name);
           } else {
             names[key] = name;
           }
@@ -65,29 +70,44 @@ module.exports = function(){
       // Unfortunately we need to iterate over every tag,
       // so we only do the iteration once to save CPU.
       for( var tag in tags ){
-
-        // Map localized names which begin with 'name:'
-        // @ref: http://wiki.openstreetmap.org/wiki/Namespace#Language_code_suffix
-        var suffix = getNameSuffix( tag );
-        // set only languages we wish to support
-        if( suffix && (!languages || languages.indexOf(suffix) !== -1)) {
-          storeName(suffix, tags[tag]);
-        }
-        // Map name data from our name mapping schema
-        else if( tag in NAME_SCHEMA ){
+        if( tag in NAME_SCHEMA ){
+          // Map name data from our name mapping schema
           storeName(NAME_SCHEMA[tag], tags[tag]);
-        }
-        // Map address data from our address mapping schema
-        else if( tag in ADDRESS_SCHEMA ){
+        } else if( tag in ADDRESS_SCHEMA ){
           var val3 = trim( tags[tag] );
           if( val3 ){
             doc.setAddress( ADDRESS_SCHEMA[tag], val3 );
+          }
+        } else {
+          // Map localized names which begin with '???name:'
+          var parts = getNameParts( tag );
+
+          if (!parts) {
+            continue;
+          }
+          var prefix = parts[0];
+          var suffix = parts[1];
+          // set only languages we wish to support
+          if( suffix && (!languages || languages.indexOf(suffix) !== -1)) {
+            if (prefix === 'name:') {
+              storeName(suffix, tags[tag]);
+            } else { // push to language aliases, to prefer the actual name:xx tag
+              storeName(suffix, tags[tag], true);
+            }
+          }
+        }
+      }
+      // push secondary name suggestions to actual name slots if they are free
+      for(var key in aliases) {
+        for(var ali of aliases[key]) {
+          if (names[key] !== ali) {
+            names[key] = ali;
           }
         }
       }
 
       // process names
-      var defaultName = names['default'] || aliases[0];
+      var defaultName = names['default'];
 
       if (!defaultName && languages) { // api likes default name
         for(var lang of languages) {
@@ -98,17 +118,19 @@ module.exports = function(){
         }
       }
       if (defaultName) {
-        doc.setName( 'default', defaultName);
+        doc.setName('default', defaultName);
       }
       for(var prop in names) {
-        if ( names[prop] !== defaultName) {
+        if (names[prop] !== defaultName) {
           // don't set duplicates. A missing language defaults to name.default.
           doc.setName( prop, names[prop] );
         }
       }
-      for(const ali of aliases) {
-        if(ali !== defaultName) {
-          doc.setNameAlias( 'default', ali );
+      for(var akey in aliases) {
+        for(var alias of aliases[akey]) {
+          if (names[akey] !== alias) {
+            doc.setNameAlias(key, alias);
+          }
         }
       }
 
@@ -146,21 +168,19 @@ function trim( str ){
   return _.trim( str, '#$%^*<>-=_{};:",./?\t\n\' ' );
 }
 
-// extract name suffix, eg for 'name:EN' return 'en'
-// if not valid, return false.
-function getNameSuffix( tag ){
+// extract name prefix and suffix, eg 'name:EN' returns ['name', 'en']
+// if not valid, return null
 
-  if( tag.length < 6 || tag.substr(0,5) !== 'name:' ){
-    return false;
+function getNameParts( tag ) {
+  for(var prefix of prefixes) {
+    if (tag.startsWith(prefix)) {
+      // normalized suffix
+      var suffix = tag.substr(prefix.length).toLowerCase();
+      // check the suffix is in the localized key list
+      if (suffix.length > 0 &&  LOCALIZED_NAME_KEYS.indexOf(suffix) !== -1) {
+        return [prefix, suffix];
+      }
+    }
   }
-
-  // normalize suffix
-  var suffix = tag.substr(5).toLowerCase();
-
-  // check the suffix is in the localized key list
-  if( LOCALIZED_NAME_KEYS.indexOf(suffix) === -1 ){
-    return false;
-  }
-
-  return suffix;
+  return null;
 }
