@@ -25,6 +25,8 @@ var config = require('pelias-config').generate().api;
 var highways = require('../config/features').highways;
 var NAME_SCHEMA = require('../schema/name_osm');
 
+const use_regular_housenumbers = true;
+
 function hasValidAddress( doc ){
   if( !isObject( doc ) ){ return false; }
   if( !isObject( doc.address_parts ) ){ return false; }
@@ -129,18 +131,29 @@ module.exports = function(){
       var unit = null;
 
       if (tags['addr:unit']) {
-        unit = ' ' + tags['addr:unit'];
+        unit = ' ' + tags['addr:unit'].toUpperCase;
       }
 
       streetnumbers.forEach( function( streetno, i ) {
-        let uno = unit ? streetno + unit : streetno; // add unit if available
+        var add_unit = true;
+        if (use_regular_housenumbers) {
+          streetno = streetno.toUpperCase();
+          for (i=0; i<streetno.length; i++ ) {
+            var c = streetno[i];
+            if ((c<'0' || c>'9') && c!=='-') { // not regular housenumber expression
+              if (c>='A' && c<='Z') { // entrance/staircase already included in housenumber
+                streetno = streetno.substring(0, i) + ' ' + streetno.substring(i, streetno.length);
+              }
+              add_unit = false; // do not add unit part to strange house numbers
+              break;
+            }
+          }
+        }
+        let uno = unit && add_unit ? streetno + unit : streetno; // add unit if available
         try {
           var newid = [ doc.getSourceId() ];
           if( i > 0 ){
             newid.push( uno );
-            if (i === 1) {
-              peliasLogger.debug('[address_extractor] found multiple house numbers: ', streetnumbers);
-            }
           }
           var name = doc.address_parts.street + ' ' +  uno;
           // copy data to new document
@@ -221,8 +234,10 @@ module.exports = function(){
         }
       } else if (isStreet(tags)) {
         doc.setLayer('street');
+        popularity = 15; // higher as address, to ensure that plain streetname fits into search
         doc.setId(doc.getId().replace('venue','street'));
       }
+      doc.setPopularity(popularity);
       this.push( doc );
     }
     return next();

@@ -27,7 +27,7 @@ var tags = [
 
 var venue_tags = [
   'addr:housename',
-  'place!amenity!building!shop!office!public_transport!cuisine!railway!sport!natural!tourism!leisure!' +
+  'place!amenity!building!shop!office!cuisine!sport!natural!tourism!leisure!' +
   'historic!man_made!landuse!waterway!aerialway!craft!military!' +
   'aeroway~terminal;aerodrome;helipad;airstrip;heliport;areodrome;spaceport;landing_strip;airfield;airport' +
   '!highway~' + highway_expression +
