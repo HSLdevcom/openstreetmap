@@ -115,11 +115,11 @@ module.exports = function(){
 
       // boost popularity of explicit address points at entrances and gates
       if (tags.barrier === 'gate') {
-        apop = 40;
+        apop = 13;
       } else if (tags.entrance === 'main') {
-        apop = 30;
+        apop = 12;
       } else if (tags.entrance === 'yes') {
-        apop = 20;
+        apop = 11;
       }
 
       // accept semi-colon delimited house numbers
@@ -218,7 +218,7 @@ module.exports = function(){
         }
       } else if (isStreet(tags)) {
         doc.setLayer('street');
-        popularity = 15; // higher as address, to ensure that plain streetname fits into search
+        popularity = 11; // higher as address, to ensure that plain streetname fits into search
         doc.setId(doc.getId().replace('venue','street'));
       }
       doc.setPopularity(popularity);
