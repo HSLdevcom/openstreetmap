@@ -5,3 +5,5 @@ nohup.out
 test/*.pbf
 test/*.pbf.idx
 coverage
+yarn.lock
+*~
