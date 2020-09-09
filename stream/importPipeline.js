@@ -18,7 +18,7 @@ streams.dbMapper = require('pelias-model').createDocumentMapperStream;
 streams.elasticsearch = require('pelias-dbclient');
 
 // default import pipeline
-streams.import = function(){
+streams.import = function(existingHashes){
   streams.pbfParser()
     .pipe( streams.docConstructor() )
     .pipe( streams.tagMapper() )
@@ -26,7 +26,7 @@ streams.import = function(){
     .pipe( streams.blacklistStream() )
     .pipe( streams.categoryMapper( categoryDefaults ) )
     .pipe( streams.adminLookup() )
-    .pipe( streams.deduper() )
+    .pipe( streams.deduper(existingHashes) )
     .pipe( streams.dbMapper() )
     .pipe( streams.elasticsearch() );
 };
