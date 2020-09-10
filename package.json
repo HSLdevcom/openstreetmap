@@ -39,6 +39,7 @@
     "async": "^3.0.1",
     "combined-stream": "^1.0.5",
     "extend": "^3.0.0",
+    "elasticsearch": "^16.7.0",
     "fs-extra": "^8.0.0",
     "geolib": "^2.0.24",
     "is-object": "^1.0.1",
