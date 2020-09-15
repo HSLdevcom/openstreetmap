@@ -31,7 +31,7 @@ async function createDeduper() {
       const pos = doc.center_point;
       const hash = name + postal + 'station';
       if (!stationHashes[hash]) {
-	stationHashes[hash] = [];
+        stationHashes[hash] = [];
       }
       stationHashes[hash].push({'popularity': doc.popularity, 'lat': pos.lat, 'lon': pos.lon});
       hashCount++;

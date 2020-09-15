@@ -41,9 +41,9 @@ function dedupe( doc ){
     for (const v of venues[hash]) {
       // fast check for approximately 100 m wide surrounding latlon box
       if (Math.abs(pos.lat - v.lat)<0.001 && Math.abs(pos.lon - v.lon) < 0.001 && pop <= v.popularity) {
-	// found existing nearby  item which is as popular, no need to create a duplicate
-	newVenue = false;
-	break;
+        // found existing nearby  item which is as popular, no need to create a duplicate
+        newVenue = false;
+        break;
       }
     }
   }
