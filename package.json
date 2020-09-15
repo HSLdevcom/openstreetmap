@@ -4,7 +4,7 @@
   "engines": {
     "node": ">=8.0.0",
     "npm": ">=1.4.3",
-    "elasticsearch": ">=1.3.4"
+    "elasticsearch": ">=16.0.0"
   },
   "author": "pelias",
   "description": "Pelias openstreetmap utilities",
@@ -39,6 +39,7 @@
     "async": "^3.0.1",
     "combined-stream": "^1.0.5",
     "extend": "^3.0.0",
+    "elasticsearch": "^16.7.0",
     "fs-extra": "^8.0.0",
     "geolib": "^2.0.24",
     "is-object": "^1.0.1",
@@ -71,9 +72,6 @@
     "tape": "^4.0.0",
     "tmp": "0.0.33"
   },
-  "pre-commit": [
-    "lint"
-  ],
   "release": {
     "branch": "master",
     "success": []
