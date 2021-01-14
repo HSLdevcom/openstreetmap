@@ -100,7 +100,7 @@ module.exports = function(){
       // push secondary name suggestions to actual name slots if they are free
       for(var key in aliases) {
         for(var ali of aliases[key]) {
-          if (names[key] !== ali) {
+          if (!names[key]) {
             names[key] = ali;
           }
         }
