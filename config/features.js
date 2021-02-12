@@ -30,7 +30,7 @@ var tags = [
 var venue_tags = [
   'addr:housename',
   'amenity~library;fire_station;university;bus_station;hospital;police;townhall;clinic', // import these also without name
-  'place!amenity!building!shop!office!cuisine!sport!natural!tourism!leisure!' +
+  'place!amenity!building!shop!office!cuisine!sport!natural!tourism!leisure!healthcare!' +
   'historic!man_made!landuse!waterway!aerialway!craft!military!' +
   'aeroway~terminal;aerodrome;helipad;airstrip;heliport;areodrome;spaceport;landing_strip;airfield;airport' +
   '!highway~' + highway_expression +
