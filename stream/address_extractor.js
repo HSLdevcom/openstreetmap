@@ -105,7 +105,10 @@ module.exports = function(){
     var addressNames = {}; // for deduping
     var popularity = 10;
 
-    if(tags.building &&  minorBuildings.indexOf(tags.building) !== -1) {
+    if(
+      (tags.building && minorBuildings.indexOf(tags.building) !== -1) ||
+      tags.waterway
+    ) {
       popularity=5;
     }
     // create a new record for street addresses
