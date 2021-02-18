@@ -24,6 +24,7 @@ var geolib = require( 'geolib' );
 var config = require('pelias-config').generate().api;
 var highways = require('../config/features').highways;
 var NAME_SCHEMA = require('../schema/name_osm');
+var popularityById = require('../config/popularity');
 
 // ranking by place tag values. Default popularity is 10
 var placePopularity = {
@@ -127,8 +128,11 @@ module.exports = function(){
     var tags = doc.getMeta('tags');
     var addressNames = {}; // for deduping
     var popularity = 10;
+    var id = doc.getSourceId();
 
-    if(
+    if (popularityById[id]) {
+      popularity=popularityById[id];
+    } else if(
       (tags.building && minorBuildings.indexOf(tags.building) !== -1) ||
       tags.waterway
     ) {
@@ -164,7 +168,7 @@ module.exports = function(){
       streetnumbers.forEach( function( streetno, i ) {
         let uno = unit ? streetno + unit : streetno; // add unit if available
         try {
-          var newid = [ doc.getSourceId() ];
+          var newid = [id];
           if( i > 0 ){
             newid.push( uno );
           }
@@ -210,7 +214,7 @@ module.exports = function(){
       var record2;
 
       try {
-        var newid = doc.getSourceId()+':B';
+        var newid = id + ':B';
 
         // copy data to new document
         record2 = new Document( 'openstreetmap', 'venue', newid )
