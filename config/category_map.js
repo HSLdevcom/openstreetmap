@@ -316,6 +316,10 @@ var mapping = {
     'optician':                 ['health']
   },
 
+  'waterway': {
+    '*':                        ['waterway']
+  },
+
   'sport': {
     '*':                        ['recreation'],
     'american_football':        ['entertainment'],
