@@ -24,6 +24,30 @@ var geolib = require( 'geolib' );
 var config = require('pelias-config').generate().api;
 var highways = require('../config/features').highways;
 var NAME_SCHEMA = require('../schema/name_osm');
+var popularityById = require('../config/popularity');
+
+// ranking by place tag values. Default popularity is 10
+var placePopularity = {
+  district: 30,
+  city: 30,
+  town: 20,
+  municipality: 20,
+  county: 15,
+  village: 8,
+  suburb: 8,
+  hamlet: 7,
+  square: 6,
+  neighbourhood: 5,
+  allotments: 5,
+  quarter: 4,
+  city_block: 3,
+  locality: 2,
+  isolated_dwelling: 2,
+  farm: 2,
+  island: 2,
+  plot: 1,
+  islet: 1
+};
 
 function hasValidAddress( doc ){
   if( !isObject( doc ) ){ return false; }
@@ -104,9 +128,19 @@ module.exports = function(){
     var tags = doc.getMeta('tags');
     var addressNames = {}; // for deduping
     var popularity = 10;
+    var id = doc.getSourceId();
 
-    if(tags.building &&  minorBuildings.indexOf(tags.building) !== -1) {
+    if (popularityById[id]) {
+      // use configured popularity to favor or avoid items
+      popularity=popularityById[id];
+    } else if(
+      (tags.building && minorBuildings.indexOf(tags.building) !== -1) ||
+      tags.waterway // myllypuro puro is not as important as the venue
+    ) {
       popularity=5;
+    } else if(tags.place) {
+      // fallback to default popularity 10
+      popularity = placePopularity[tags.place] || 10;
     }
     // create a new record for street addresses
     if( isAddress ){
@@ -135,7 +169,7 @@ module.exports = function(){
       streetnumbers.forEach( function( streetno, i ) {
         let uno = unit ? streetno + unit : streetno; // add unit if available
         try {
-          var newid = [ doc.getSourceId() ];
+          var newid = [id];
           if( i > 0 ){
             newid.push( uno );
           }
@@ -181,7 +215,7 @@ module.exports = function(){
       var record2;
 
       try {
-        var newid = doc.getSourceId()+':B';
+        var newid = id + ':B';
 
         // copy data to new document
         record2 = new Document( 'openstreetmap', 'venue', newid )
