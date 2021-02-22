@@ -131,10 +131,11 @@ module.exports = function(){
     var id = doc.getSourceId();
 
     if (popularityById[id]) {
+      // use configured popularity to favor or avoid items
       popularity=popularityById[id];
     } else if(
       (tags.building && minorBuildings.indexOf(tags.building) !== -1) ||
-      tags.waterway
+      tags.waterway // myllypuro puro is not as important as the venue
     ) {
       popularity=5;
     } else if(tags.place) {
