@@ -198,10 +198,16 @@ module.exports = function(){
           // multilang/altname support for addresses
           for( var tag in tags ) {
             var suffix = getStreetSuffix(tag);
-            if (suffix && suffix !== "default") {
+            if (suffix && suffix !== 'default') {
               record.setName(suffix, tags[tag] + ' ' + uno);
             }
           }
+	  var namefi = record.getName('fi');
+	  var namesv = record.getName('sv');
+	  var namedef = record.getName('default');
+	  if (namefi && namesv && namedef && namesv === namedef && namefi !== namedef) {
+	    record.setName('default', namefi);
+	  }
           this.push( record );
         }
         else {
