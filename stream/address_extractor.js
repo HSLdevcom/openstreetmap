@@ -23,6 +23,7 @@ var Document = require('pelias-model').Document;
 var geolib = require( 'geolib' );
 var config = require('pelias-config').generate().api;
 var highways = require('../config/features').highways;
+var filters = require('../config/features').venue_filters;
 var NAME_SCHEMA = require('../schema/name_osm');
 var popularityById = require('../config/popularity');
 
@@ -84,6 +85,17 @@ function isStreet( tags ){
     return false;
   }
   return (highways.indexOf(hwtype) !== -1);
+}
+
+function filter( tags ){
+  if (filters) {
+    for( f in filters ) {
+      if (tags[f] === filters[f])  {
+	return false;
+      }
+    }
+  }
+  return true; // doc OK, it passes filtering
 }
 
 var houseNameValidator = new RegExp('[a-zA-Z]{3,}');
@@ -250,7 +262,7 @@ module.exports = function(){
 
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
-    if( isNamedPoi && !addressNames[doc.getName('default')]) {
+    if( isNamedPoi && !addressNames[doc.getName('default')] && filter(tags)) {
       if (tags.public_transport === 'station' || tags.amenity === 'bus_station') {
         doc.setLayer('station');
         if (tags.usage !== 'tourism') {

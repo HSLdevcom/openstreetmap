@@ -37,7 +37,12 @@ var venue_tags = [
   '§#(' + name_expression + ')(:(fi|sv|en))?'
 ];
 
+// simple post filters
+var venue_filters = {
+  amenity: 'bicycle_rental'
+};
+
 names = names.join(',');
 highways = highways.join(',');
 
-module.exports = {tags, venue_tags, names, highways};
+module.exports = {tags, venue_tags, names, highways, venue_filters};
