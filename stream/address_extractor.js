@@ -89,7 +89,7 @@ function isStreet( tags ){
 
 function filter( tags ){
   if (filters) {
-    for( f in filters ) {
+    for(var f in filters ) {
       if (tags[f] === filters[f])  {
 	return false;
       }

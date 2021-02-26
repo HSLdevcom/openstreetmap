@@ -52,9 +52,6 @@ module.exports = function(){
         }
         var splitNames = val1.split(';');
         for(var name of splitNames) {
-          if(key !== 'default' && allNames[name]) {
-            continue;
-          }
           allNames[name] = true;
           if(names[key] || forceAlias) { // slot already used
             if (!aliases[key]) {
@@ -120,11 +117,16 @@ module.exports = function(){
       if (defaultName) {
         doc.setName('default', defaultName);
       }
+      var namefi = names.fi;
+      var namesv = names.sv;
+      var namedef = names.default;
+      if (namefi && namesv && namedef && namesv === namedef && namefi !== namedef) {
+	// hit to name.default does not understand that it is in swedish, so put fi as default
+	names.default = namefi;
+      }
+
       for(var prop in names) {
-        if (names[prop] !== defaultName) {
-          // don't set duplicates. A missing language defaults to name.default.
-          doc.setName( prop, names[prop] );
-        }
+        doc.setName( prop, names[prop] );
       }
       for(var akey in aliases) {
         for(var alias of aliases[akey]) {
