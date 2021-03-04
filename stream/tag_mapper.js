@@ -94,6 +94,7 @@ module.exports = function(){
           }
         }
       }
+
       // push secondary name suggestions to actual name slots if they are free
       for(var key in aliases) {
         for(var ali of aliases[key]) {
@@ -131,7 +132,7 @@ module.exports = function(){
       for(var akey in aliases) {
         for(var alias of aliases[akey]) {
           if (names[akey] !== alias) {
-            doc.setNameAlias(key, alias);
+            doc.setNameAlias(akey, alias);
           }
         }
       }
