@@ -1,4 +1,3 @@
-
 /**
   The address extractor is responsible for cloning documents where a valid address
   data exists.
@@ -23,7 +22,8 @@ var Document = require('pelias-model').Document;
 var geolib = require( 'geolib' );
 var config = require('pelias-config').generate().api;
 var highways = require('../config/features').highways;
-var filters = require('../config/features').venue_filters;
+var venuefilters = require('../config/features').venue_filters;
+var addrfilters = require('../config/features').address_filters;
 var NAME_SCHEMA = require('../schema/name_osm');
 var popularityById = require('../config/popularity');
 
@@ -87,15 +87,26 @@ function isStreet( tags ){
   return (highways.indexOf(hwtype) !== -1);
 }
 
-function filter( tags ){
-  if (filters) {
-    for(var f in filters ) {
-      if (tags[f] === filters[f])  {
+function venueFilter( tags ){
+  if (venuefilters) {
+    for(var f in venuefilters ) {
+      if (tags[f] === venuefilters[f])  {
 	return false;
       }
     }
   }
   return true; // doc OK, it passes filtering
+}
+
+function addressFilter( tags ){
+  if (addrfilters) {
+    for(var f in addrfilters ) {
+      if (tags[f] === addrfilters[f])  {
+	return false;
+      }
+    }
+  }
+  return true;
 }
 
 var houseNameValidator = new RegExp('[a-zA-Z]{3,}');
@@ -155,7 +166,7 @@ module.exports = function(){
       popularity = placePopularity[tags.place] || 10;
     }
     // create a new record for street addresses
-    if( isAddress ){
+    if(isAddress && addressFilter(tags)){
       var record;
       var apop = popularity;
 
@@ -262,7 +273,7 @@ module.exports = function(){
 
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
-    if( isNamedPoi && !addressNames[doc.getName('default')] && filter(tags)) {
+    if( isNamedPoi && !addressNames[doc.getName('default')] && venueFilter(tags)) {
       if (tags.public_transport === 'station' || tags.amenity === 'bus_station') {
         doc.setLayer('station');
         if (tags.usage !== 'tourism') {

@@ -42,7 +42,11 @@ var venue_filters = {
   amenity: 'bicycle_rental'
 };
 
+var address_filters = {
+  access: 'no'
+};
+
 names = names.join(',');
 highways = highways.join(',');
 
-module.exports = {tags, venue_tags, names, highways, venue_filters};
+module.exports = {tags, venue_tags, names, highways, venue_filters, address_filters};
