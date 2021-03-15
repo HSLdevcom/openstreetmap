@@ -173,9 +173,9 @@ module.exports = function(){
       // boost popularity of explicit address points at entrances and gates
       if (tags.barrier === 'gate') {
         apop = 13;
-      } else if (tags.entrance === 'main') {
+      } else if (tags.entrance === 'main' || tags._centroidType === 'mainEntrance') {
         apop = 12;
-      } else if (tags.entrance === 'yes') {
+      } else if (tags.entrance === 'yes' || tags._centroidType === 'entrance') {
         apop = 11;
       }
 
