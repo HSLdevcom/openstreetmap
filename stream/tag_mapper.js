@@ -95,15 +95,6 @@ module.exports = function(){
         }
       }
 
-      // push secondary name suggestions to actual name slots if they are free
-      for(var key in aliases) {
-        for(var ali of aliases[key]) {
-          if (!names[key]) {
-            names[key] = ali;
-          }
-        }
-      }
-
       // process names
       var defaultName = names['default'];
 
@@ -124,6 +115,19 @@ module.exports = function(){
       if (namefi && namesv && namedef && namesv === namedef && namefi !== namedef) {
 	// hit to name.default does not understand that it is in swedish, so put fi as default
 	names.default = namefi;
+      }
+
+      // preprocess aliases
+      for(var key in aliases) {
+        for(var ali of aliases[key]) {
+          if (!names[key]) {
+	    if (defaultName) {
+	      names[key] = defaultName;
+	    } else {
+              names[key] = ali;
+	    }
+          }
+        }
       }
 
       for(var prop in names) {
