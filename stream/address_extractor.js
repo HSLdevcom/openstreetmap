@@ -304,7 +304,13 @@ var addrProps = [ 'name', 'street', 'zip' ];
 function setProperties( record, doc, number ){
   addrProps.forEach( function ( prop ){
     try {
-      record.setAddress( prop, doc.getAddress( prop ) );
+      const val = doc.getAddress( prop );
+      if (val) {
+        record.setAddress( prop, val );
+        if (prop == 'zip') {
+          record.addParent( 'postalcode', val, '?' );
+        }
+      }
     } catch ( ex ) {}
   });
   if (number) {
