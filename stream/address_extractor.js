@@ -307,7 +307,7 @@ function setProperties( record, doc, number ){
       const val = doc.getAddress( prop );
       if (val) {
         record.setAddress( prop, val );
-        if (prop == 'zip') {
+        if (prop === 'zip') {
           record.addParent( 'postalcode', val, '?' );
         }
       }
