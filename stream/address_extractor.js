@@ -91,7 +91,7 @@ function venueFilter( tags ){
   if (venuefilters) {
     for(var f in venuefilters ) {
       if (tags[f] === venuefilters[f])  {
-	return false;
+        return false;
       }
     }
   }
@@ -102,7 +102,7 @@ function addressFilter( tags ){
   if (addrfilters) {
     for(var f in addrfilters ) {
       if (tags[f] === addrfilters[f])  {
-	return false;
+        return false;
       }
     }
   }
@@ -225,12 +225,12 @@ module.exports = function(){
               record.setName(suffix, tags[tag] + ' ' + uno);
             }
           }
-	  var namefi = record.getName('fi');
-	  var namesv = record.getName('sv');
-	  var namedef = record.getName('default');
-	  if (namefi && namesv && namedef && namesv === namedef && namefi !== namedef) {
-	    record.setName('default', namefi);
-	  }
+          var namefi = record.getName('fi');
+          var namesv = record.getName('sv');
+          var namedef = record.getName('default');
+          if (namefi && namesv && namedef && namesv === namedef && namefi !== namedef) {
+            record.setName('default', namefi);
+          }
           this.push( record );
         }
         else {
@@ -304,7 +304,13 @@ var addrProps = [ 'name', 'street', 'zip' ];
 function setProperties( record, doc, number ){
   addrProps.forEach( function ( prop ){
     try {
-      record.setAddress( prop, doc.getAddress( prop ) );
+      const val = doc.getAddress( prop );
+      if (val) {
+        record.setAddress( prop, val );
+        if (prop === 'zip') {
+          record.addParent( 'postalcode', val, '?' );
+        }
+      }
     } catch ( ex ) {}
   });
   if (number) {
