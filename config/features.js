@@ -25,8 +25,6 @@ var tags = [
    - this rule set means that we cannot use regex special chars or delimiters '!,;#§~' in the required tag names/values.
 */
 
-
-
 var venue_tags = [
   'addr:housename',
   'amenity~library;fire_station;university;bus_station;hospital;police;townhall;clinic', // import these also without name
