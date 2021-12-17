@@ -89,10 +89,14 @@ function isStreet( tags ){
 
 function venueFilter( tags ){
   if (venuefilters) {
-    for(var f in venuefilters ) {
-      if (tags[f] === venuefilters[f])  {
-        return false;
+    for (let i=0; i<venuefilters.lenght; i++) {
+      const filter = venuefilters[i];
+      for(var f in filter) {
+        if (tags[f] !== filter[f])  {
+          return true;
+	}
       }
+      return false;
     }
   }
   return true; // doc OK, it passes filtering
@@ -100,10 +104,14 @@ function venueFilter( tags ){
 
 function addressFilter( tags ){
   if (addrfilters) {
-    for(var f in addrfilters ) {
-      if (tags[f] === addrfilters[f])  {
-        return false;
+    for (let i=0; i<addrfilters.lenght; i++) {
+      const filter = addrfilters[i];
+      for(var f in filter) {
+        if (tags[f] !== filter[f])  {
+          return true;
+	}
       }
+      return false;
     }
   }
   return true;
