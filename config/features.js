@@ -25,8 +25,6 @@ var tags = [
    - this rule set means that we cannot use regex special chars or delimiters '!,;#§~' in the required tag names/values.
 */
 
-
-
 var venue_tags = [
   'addr:housename',
   'amenity~library;fire_station;university;bus_station;hospital;police;townhall;clinic', // import these also without name
@@ -37,14 +35,16 @@ var venue_tags = [
   '§#(' + name_expression + ')(:(fi|sv|en))?'
 ];
 
-// simple post filters
-var venue_filters = {
-  amenity: 'bicycle_rental'
-};
+// simple post filters. Each array item can contain a set of conditions which all myst apply (AND operation)
+var venue_filters = [
+  { amenity: 'bicycle_rental' },
+  { tourism: 'information', information: 'board'},
+  { tourism: 'information', information: 'map'}
+];
 
-var address_filters = {
-  access: 'no'
-};
+var address_filters = [
+  { access: 'no' }
+];
 
 names = names.join(',');
 highways = highways.join(',');

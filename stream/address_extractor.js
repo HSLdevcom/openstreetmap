@@ -50,6 +50,11 @@ var placePopularity = {
   islet: 1
 };
 
+// Popularity coefficients
+var popularityCoeff = {
+  amenity: { toilets: 0.2 }  // reduce toilet popularity to 20 % only
+};
+
 function hasValidAddress( doc ){
   if( !isObject( doc ) ){ return false; }
   if( !isObject( doc.address_parts ) ){ return false; }
@@ -89,10 +94,14 @@ function isStreet( tags ){
 
 function venueFilter( tags ){
   if (venuefilters) {
-    for(var f in venuefilters ) {
-      if (tags[f] === venuefilters[f])  {
-        return false;
+    for (let i=0; i<venuefilters.lenght; i++) {
+      const filter = venuefilters[i];
+      for(var f in filter) {
+        if (tags[f] !== filter[f])  {
+          return true;
+	}
       }
+      return false;
     }
   }
   return true; // doc OK, it passes filtering
@@ -100,10 +109,14 @@ function venueFilter( tags ){
 
 function addressFilter( tags ){
   if (addrfilters) {
-    for(var f in addrfilters ) {
-      if (tags[f] === addrfilters[f])  {
-        return false;
+    for (let i=0; i<addrfilters.lenght; i++) {
+      const filter = addrfilters[i];
+      for(var f in filter) {
+        if (tags[f] !== filter[f])  {
+          return true;
+	}
       }
+      return false;
     }
   }
   return true;
@@ -165,6 +178,17 @@ module.exports = function(){
       // fallback to default popularity 10
       popularity = placePopularity[tags.place] || 10;
     }
+
+    for(var f in popularityCoeff) {
+      const val = tags[f];
+      if (val) {
+	const coeff = popularityCoeff[f][val];
+	if (coeff) {
+	  popularity = Math.ceil(coeff*popularity);
+	}
+      }
+    }
+
     // create a new record for street addresses
     if(isAddress && addressFilter(tags)){
       var record;
