@@ -92,34 +92,23 @@ function isStreet( tags ){
   return (highways.indexOf(hwtype) !== -1);
 }
 
-function venueFilter( tags ){
-  if (venuefilters) {
-    for (let i=0; i<venuefilters.lenght; i++) {
-      const filter = venuefilters[i];
+function applyFilters( tags, filters ){
+  if (filters) {
+    for (let i=0; i<filters.length; i++) {
+      const filter = filters[i];
+      var match = true;
       for(var f in filter) {
         if (tags[f] !== filter[f])  {
-          return true;
-	}
+          match = false;
+          break;
+        }
       }
-      return false;
+      if (match) {
+        return false;
+      }
     }
   }
   return true; // doc OK, it passes filtering
-}
-
-function addressFilter( tags ){
-  if (addrfilters) {
-    for (let i=0; i<addrfilters.lenght; i++) {
-      const filter = addrfilters[i];
-      for(var f in filter) {
-        if (tags[f] !== filter[f])  {
-          return true;
-	}
-      }
-      return false;
-    }
-  }
-  return true;
 }
 
 var houseNameValidator = new RegExp('[a-zA-Z]{3,}');
@@ -182,15 +171,15 @@ module.exports = function(){
     for(var f in popularityCoeff) {
       const val = tags[f];
       if (val) {
-	const coeff = popularityCoeff[f][val];
-	if (coeff) {
-	  popularity = Math.ceil(coeff*popularity);
-	}
+        const coeff = popularityCoeff[f][val];
+        if (coeff) {
+          popularity = Math.ceil(coeff*popularity);
+        }
       }
     }
 
     // create a new record for street addresses
-    if(isAddress && addressFilter(tags)){
+    if(isAddress && applyFilters(tags, addrfilters)) {
       var record;
       var apop = popularity;
 
@@ -297,7 +286,7 @@ module.exports = function(){
 
     // forward doc downstream if it's a POI in its own right
     // note: this MUST be below the address push()
-    if( isNamedPoi && !addressNames[doc.getName('default')] && venueFilter(tags)) {
+    if( isNamedPoi && !addressNames[doc.getName('default')] && applyFilters(tags, venuefilters)) {
       if (tags.public_transport === 'station' || tags.amenity === 'bus_station') {
         doc.setLayer('station');
         if (tags.usage !== 'tourism') {
