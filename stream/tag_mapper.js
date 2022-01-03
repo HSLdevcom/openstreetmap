@@ -113,29 +113,31 @@ module.exports = function(){
       var namesv = names.sv;
       var namedef = names.default;
       if (namefi && namesv && namedef && namesv === namedef && namefi !== namedef) {
-	// hit to name.default does not understand that it is in swedish, so put fi as default
-	names.default = namefi;
+        // hit to name.default does not understand that it is in swedish, so put fi as default
+        names.default = namefi;
       }
 
       // preprocess aliases
       for(var key in aliases) {
         for(var ali of aliases[key]) {
           if (!names[key]) {
-	    if (defaultName) {
-	      names[key] = defaultName;
-	    } else {
+            if (defaultName) {
+              names[key] = defaultName;
+            } else {
               names[key] = ali;
-	    }
+            }
           }
         }
       }
 
       for(var prop in names) {
-        doc.setName( prop, names[prop] );
+        if (names[prop] !== defaultName) {
+          doc.setName( prop, names[prop] );
+        }
       }
       for(var akey in aliases) {
         for(var alias of aliases[akey]) {
-          if (names[akey] !== alias) {
+          if (names[akey] !== alias && defaultName !== alias) {
             doc.setNameAlias(akey, alias);
           }
         }
