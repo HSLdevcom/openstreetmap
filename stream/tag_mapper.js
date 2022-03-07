@@ -138,7 +138,13 @@ module.exports = function(){
       for(var akey in aliases) {
         for(var alias of aliases[akey]) {
           if (names[akey] !== alias && defaultName !== alias) {
-            doc.setNameAlias(akey, alias);
+            if (names[akey] !== defaultName) {
+              // set alias to a named slot only if the name version was set above to the document
+              // in other words do not populate an official lang version with some odd alias
+              doc.setNameAlias(akey, alias);
+            } else  {
+              doc.setNameAlias('default', alias);
+            }
           }
         }
       }
