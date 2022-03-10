@@ -42,9 +42,17 @@ var venue_filters = [
   { tourism: 'information', information: 'map'}
 ];
 
+if(process.env.OSM_VENUE_FILTERS) {
+  venue_filters = venue_filters.concat(JSON.parse(process.env.OSM_VENUE_FILTERS));
+}
+
 var address_filters = [
   { access: 'no' }
 ];
+
+if(process.env.OSM_ADDRESS_FILTERS) {
+  address_filters = address_filters.concat(JSON.parse(process.env.OSM_ADDRESS_FILTERS));
+}
 
 names = names.join(',');
 highways = highways.join(',');
