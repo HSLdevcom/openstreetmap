@@ -47,7 +47,7 @@
     "joi": "^14.0.0",
     "lodash": "^4.17.4",
     "merge": "^1.2.0",
-    "pbf2json": "git://github.com/hsldevcom/pbf2json.git",
+    "pbf2json": "github:hsldevcom/pbf2json",
     "pelias-blacklist-stream": "^1.0.0",
     "pelias-config": "^4.8.0",
     "pelias-dbclient": "github:hsldevcom/dbclient",
