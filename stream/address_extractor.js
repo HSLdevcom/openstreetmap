@@ -160,7 +160,7 @@ module.exports = function(){
       popularity=popularityById[id];
     } else if(
       (tags.building && minorBuildings.indexOf(tags.building) !== -1) ||
-      tags.waterway // myllypuro puro is not as important as the venue
+      tags.waterway || tags.landuse // myllypuro puro is not as important as the venue
     ) {
       popularity=5;
     } else if(tags.place) {
