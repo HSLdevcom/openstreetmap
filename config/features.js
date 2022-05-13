@@ -46,8 +46,6 @@ if(process.env.OSM_VENUE_FILTERS) {
   venue_filters = venue_filters.concat(JSON.parse(process.env.OSM_VENUE_FILTERS));
 }
 
-console.log(JSON.stringify(venue_filters));
-
 var address_filters = [
   { access: 'no' }
 ];
