@@ -234,7 +234,7 @@ module.exports = function(){
           // multilang/altname support for addresses
           for( var tag in tags ) {
             var suffix = getStreetSuffix(tag);
-            if (suffix && suffix !== 'default') {
+            if (suffix && suffix !== 'default' && tags[tag] !== doc.address_parts.street) {
               record.setName(suffix, tags[tag] + ' ' + uno);
             }
           }
