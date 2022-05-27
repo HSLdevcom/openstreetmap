@@ -265,7 +265,7 @@ module.exports = function(){
           .setCentroid( doc.getCentroid() );
 
         setProperties( record2, doc );
-        record2.setPopularity(popularity);
+        record2.setPopularity(7); // set lower priority than regular venues
       }
 
       catch( e ){
