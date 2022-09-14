@@ -59,10 +59,8 @@ module.exports = function(){
       doc.setMeta( 'tags', item.tags || {} );
 
       if (!blacklist.includes(uniqueId)) {
-	// Push instance of Document downstream
-	this.push( doc );
-      } else {
-	console.log("Skip black" + uniqueId);
+        // Push instance of Document downstream
+        this.push( doc );
       }
     }
 
