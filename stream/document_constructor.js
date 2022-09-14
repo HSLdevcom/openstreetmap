@@ -7,7 +7,9 @@
 const through = require('through2');
 const Document = require('pelias-model').Document;
 const peliasLogger = require( 'pelias-logger' ).get( 'openstreetmap' );
+const peliasConfig = require('pelias-config').generate(require('../schema'));
 const _ = require('lodash');
+const blacklist = peliasConfig.imports.blacklist || [];
 
 module.exports = function(){
 
@@ -56,8 +58,12 @@ module.exports = function(){
       // Store osm tags as a property inside _meta
       doc.setMeta( 'tags', item.tags || {} );
 
-      // Push instance of Document downstream
-      this.push( doc );
+      if (!blacklist.includes(uniqueId)) {
+	// Push instance of Document downstream
+	this.push( doc );
+      } else {
+	console.log("Skip black" + uniqueId);
+      }
     }
 
     catch( e ){

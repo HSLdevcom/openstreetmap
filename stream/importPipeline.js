@@ -8,7 +8,6 @@ streams.config = {
 
 streams.pbfParser = require('./multiple_pbfs').create;
 streams.docConstructor = require('./document_constructor');
-streams.blacklistStream = require('pelias-blacklist-stream');
 streams.tagMapper = require('./tag_mapper');
 streams.deduper = require('./deduper');
 streams.adminLookup = require('pelias-wof-admin-lookup').create;
@@ -23,7 +22,6 @@ streams.import = function(existingHashes){
     .pipe( streams.docConstructor() )
     .pipe( streams.tagMapper() )
     .pipe( streams.addressExtractor() )
-    .pipe( streams.blacklistStream() )
     .pipe( streams.categoryMapper( categoryDefaults ) )
     .pipe( streams.adminLookup() )
     .pipe( streams.deduper(existingHashes) )
