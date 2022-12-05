@@ -280,6 +280,7 @@ var mapping = {
   },
 
   'place': {
+    'locality':                 ['unpopulated area'],
     '*':                        ['populated area']
   },
 
