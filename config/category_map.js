@@ -280,8 +280,8 @@ var mapping = {
   },
 
   'place': {
-    '*':                        ['populated area']
-    'locality':                 ['unpopulated area'],
+    '*':                        ['populated area'],
+    'locality':                 ['unpopulated area']
   },
 
   'public_transport': {
