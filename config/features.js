@@ -39,7 +39,8 @@ var venue_tags = [
 var venue_filters = [
   { amenity: 'bicycle_rental' },
   { tourism: 'information', information: 'board'},
-  { tourism: 'information', information: 'map'}
+  { tourism: 'information', information: 'map'},
+  { tourism: 'information', information: 'guidepost'}
 ];
 
 if(process.env.OSM_VENUE_FILTERS) {
