@@ -51,6 +51,7 @@ function config(opts){
     } else {
       opts.tags = features.tags;
     }
+    opts.tags = opts.tags.join(',');
   }
 
   if(!opts.names){
@@ -74,7 +75,7 @@ function validatePath( path, message ){
 
 // Validate the tag list
 function validateTags( tags ){
-  if( !Array.isArray(tags) || !tags.length ) {
+  if(!tags.length) {
     throw new Error( 'invalid tags' );
   }
 }

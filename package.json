@@ -1,11 +1,6 @@
 {
   "name": "pelias-openstreetmap",
   "version": "0.0.0-development",
-  "engines": {
-    "node": ">=8.0.0",
-    "npm": ">=1.4.3",
-    "elasticsearch": ">=16.0.0"
-  },
   "author": "pelias",
   "description": "Pelias openstreetmap utilities",
   "homepage": "https://github.com/mapzen/pelias-openstreetmap",
