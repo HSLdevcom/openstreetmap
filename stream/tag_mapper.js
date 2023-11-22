@@ -106,15 +106,18 @@ module.exports = function(){
           }
         }
       }
-      if (defaultName) {
-        doc.setName('default', defaultName);
-      }
       var namefi = names.fi;
       var namesv = names.sv;
       var namedef = names.default;
+
       if (namefi && namesv && namedef && namesv === namedef && namefi !== namedef) {
         // hit to name.default does not understand that it is in swedish, so put fi as default
-        names.default = namefi;
+        defaultName = namefi;
+      }
+
+      if (defaultName) {
+        doc.setName('default', defaultName);
+	names.default =  defaultName;
       }
 
       // preprocess aliases
