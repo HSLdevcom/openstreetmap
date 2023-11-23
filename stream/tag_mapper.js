@@ -118,6 +118,12 @@ module.exports = function(){
       if (defaultName) {
         doc.setName('default', defaultName);
 	names.default =  defaultName;
+
+	if (tags['branch']) {
+	  // e.g. name=K-market, branch=Tullintori
+	  const br = trim(tags['branch']);
+	  doc.setNameAlias('default', `${defaultName} ${br}`);
+	}
       }
 
       // preprocess aliases
