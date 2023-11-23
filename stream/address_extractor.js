@@ -59,10 +59,9 @@ function hasValidAddress( doc ){
   if( !isObject( doc ) ){ return false; }
   if( !isObject( doc.address_parts ) ){ return false; }
   if( 'string' !== typeof doc.address_parts.number ){ return false; }
-  if( 'string' !== typeof doc.address_parts.street ){ return false; }
   if( !doc.address_parts.number.length ){ return false; }
-  if( !doc.address_parts.street.length ){ return false; }
-  return true;
+
+  return doc.address_parts.street?.length || doc.getMeta('tags')['addr:place']?.length;
 }
 
 var languages;
@@ -182,6 +181,10 @@ module.exports = function(){
     if(isAddress && applyFilters(tags, addrfilters)) {
       var record;
       var apop = popularity;
+
+      if (!doc.address_parts.street && tags['addr:place']) {
+	doc.setAddress('street', tags['addr:place']);
+      }
 
       // boost popularity of explicit address points at entrances and gates
       if (tags.barrier === 'gate') {

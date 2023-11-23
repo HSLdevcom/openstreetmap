@@ -12,7 +12,8 @@ var highway_expression = highways.join(';'); // for name regex
 
 // address tags imported
 var tags = [
-  'addr:housenumber§addr:street'
+  'addr:housenumber§addr:street',
+  'addr:housenumber§addr:place'
 ];
 
 /* tags corresponding to venues. Syntax:
