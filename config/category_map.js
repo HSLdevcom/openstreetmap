@@ -283,14 +283,13 @@ var mapping = {
     'borough':         ['populated area'],
     'city':            ['populated area'],
     'city block':      ['populated area'],
-    'hamlet':          ['populated area'],
     'municipality':    ['populated area'],
     'neighbourhood':   ['populated area'],
-    'plot':            ['populated area'],
     'quarter':         ['populated area'],
     'suburb':          ['populated area'],
     'town':            ['populated area'],
-    'village':         ['populated area']
+    'hamlet':          ['village'],
+    'village':         ['village']
   },
 
   'public_transport': {
