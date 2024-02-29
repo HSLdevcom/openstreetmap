@@ -52,7 +52,8 @@ var placePopularity = {
 
 // Popularity coefficients
 var popularityCoeff = {
-  amenity: { toilets: 0.2 }  // reduce toilet popularity to 20 % only
+  amenity: { toilets: 0.2 },  // reduce toilet popularity to 20 % only
+  memorial: { plaque: 0.1 }
 };
 
 function hasValidAddress( doc ){
