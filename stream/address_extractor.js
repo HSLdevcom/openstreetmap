@@ -53,7 +53,8 @@ var placePopularity = {
 // Popularity coefficients
 var popularityCoeff = {
   amenity: { toilets: 0.2 },  // reduce toilet popularity to 20 % only
-  memorial: { plaque: 0.1 }
+  memorial: { plaque: 0.1 },
+  natural: 0.5, // all natural places 50 % less
 };
 
 function hasValidAddress( doc ){
@@ -171,7 +172,13 @@ module.exports = function(){
     for(var f in popularityCoeff) {
       const val = tags[f];
       if (val) {
-        const coeff = popularityCoeff[f][val];
+        let coeff;
+        if (typeof popularityCoeff[f] === 'number') {
+          // applies to all values
+          coeff = popularityCoeff[f];
+        } else {
+          coeff = popularityCoeff[f][val];
+        }
         if (coeff) {
           popularity = Math.ceil(coeff*popularity);
         }
@@ -184,7 +191,7 @@ module.exports = function(){
       var apop = popularity;
 
       if (!doc.address_parts.street && tags['addr:place']) {
-	doc.setAddress('street', tags['addr:place']);
+        doc.setAddress('street', tags['addr:place']);
       }
 
       // boost popularity of explicit address points at entrances and gates
