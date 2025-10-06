@@ -4,5 +4,6 @@
 // currently this works mainly amnong equally good matches
 
 module.exports = {
-  'way:425291777': 1 // hki-vantaa lentoasema, undesired point inside terminal
+  'way:425291777': 1, // hki-vantaa lentoasema, undesired point inside terminal
+  'node:4625883091': 11 // HSL customer service wins HSL main office
 };
