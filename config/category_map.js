@@ -233,8 +233,7 @@ var mapping = {
   },
 
   'historic': {
-    'archaeological_site':      ['education'],
-    'monument':                 ['education']
+    '*':                        ['historic']
   },
 
   'landuse': {
