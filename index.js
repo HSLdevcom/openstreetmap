@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const logger = require('pelias-logger').get('openstreetmap');
-const elasticsearch = require('elasticsearch');
+const { Client } = require('@elastic/elasticsearch');
 const importPipeline = require('./stream/importPipeline');
 
 const stationHashes = {};
@@ -11,10 +11,7 @@ var hashCount = 0;
 
 async function createDeduper() {
 
-  const client = new elasticsearch.Client({
-    host: 'localhost:9200',
-    apiVersion: '7.6',
-  });
+  const client = new Client({ node: 'http://localhost:9200' });
 
   function addHash(hit) {
     const doc = hit._source;
@@ -50,7 +47,7 @@ async function createDeduper() {
       }
     }
   });
-  responseQueue.push(response);
+  responseQueue.push(response.body);
 
   while (responseQueue.length) {
     const body = responseQueue.shift();
@@ -62,12 +59,11 @@ async function createDeduper() {
       break;
     }
     // get the next response if there are more items
-    responseQueue.push(
-      await client.scroll({
-        scrollId: body._scroll_id,
-        scroll: '30s'
-      })
-    );
+    const next = await client.scroll({
+      scroll_id: body._scroll_id,
+      scroll: '30s'
+    });
+    responseQueue.push(next.body);
   }
 }
 
