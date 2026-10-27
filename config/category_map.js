@@ -37,12 +37,12 @@ var mapping = {
 
     'place_of_worship':         ['religion'],
 
-    'arts_centre':              ['education','entertainment'],
+    'arts_centre':              ['culture'],
     'community_centre':         ['education','entertainment'],
     'social_centre':            ['education','entertainment'],
-    'library':                  ['education','entertainment'],
-    'planetarium':              ['education','entertainment'],
-    'theatre':                  ['education','entertainment'],
+    'library':                  ['culture'],
+    'planetarium':              ['culture'],
+    'theatre':                  ['culture'],
     'college':                  ['education'],
     'kindergarten':             ['education'],
     'school':                   ['education'],
@@ -50,7 +50,7 @@ var mapping = {
 
     'bar':                      ['nightlife'],
     'biergarten':               ['nightlife','food'],
-    'cinema':                   ['entertainment','nightlife'],
+    'cinema':                   ['entertainment'],
     'casino':                   ['nightlife'],
     'gambling':                 ['nightlife'],
     'nightclub':                ['nightlife'],
@@ -80,12 +80,12 @@ var mapping = {
     'social_facility':          ['health'],
     'veterinary':               ['professional'],
 
-    'cafe':                     ['food','retail'],
-    'fast_food':                ['food','retail'],
-    'food_court':               ['food','retail'],
-    'ice_cream':                ['food','retail'],
+    'cafe':                     ['food'],
+    'fast_food':                ['food'],
+    'food_court':               ['food'],
+    'ice_cream':                ['food'],
     'marketplace':              ['food','retail'],
-    'restaurant':               ['food','retail','nightlife'],
+    'restaurant':               ['food'],
 
     'bus_station':              ['transport','transport:public','transport:bus'],
     'taxi':                     ['transport','transport:taxi'],
@@ -117,7 +117,7 @@ var mapping = {
     'university':               ['education'],
     'public':                   ['government'],
 
-    'farm':                     ['industry','industry:agriculture'],
+    'farm':                     ['industry:agriculture'],
 
     'train_station':            ['transport','transport:station'],
     'transportation':           ['transport','transport:station']
@@ -233,8 +233,43 @@ var mapping = {
   },
 
   'historic': {
-    'archaeological_site':      ['education'],
-    'monument':                 ['education']
+    '*':                        ['historic']
+  },
+
+  'landuse': {
+    'farm':                     ['industry:agriculture'],
+    'farmland':                 ['industry:agriculture'],
+    'farmyard':                 ['industry:agriculture'],
+    'orchard':                  ['industry:agriculture'],
+    'vineyard':                 ['industry:agriculture'],
+    'plant_nursery':            ['industry:agriculture'],
+    'greenhouse_horticulture':  ['industry:agriculture'],
+    'animal_keeping':           ['industry:agriculture'],
+    'aquaculture':              ['industry:agriculture'],
+
+    'industrial':               ['industry'],
+    'quarry':                   ['industry'],
+    'landfill':                 ['industry'],
+
+    'commercial':               ['professional'],
+    'retail':                   ['retail'],
+
+    'forest':                   ['natural','recreation'],
+    'meadow':                   ['natural'],
+    'allotments':               ['recreation'],
+    'recreation_ground':        ['recreation'],
+    'village_green':            ['recreation'],
+    'winter_sports':            ['recreation'],
+    'fairground':               ['entertainment'],
+
+    'education':                ['education'],
+    'religious':                ['religion'],
+    'military':                 ['government:military','government'],
+
+    'railway':                  ['transport','transport:rail'],
+    'depot':                    ['transport'],
+    'harbour':                  ['transport','transport:sea'],
+    'port':                     ['transport','transport:sea']
   },
 
   'leisure': {
@@ -254,7 +289,7 @@ var mapping = {
     'park':                     ['recreation'],
     'pitch':                    ['recreation','entertainment'],
     'playground':               ['recreation'],
-    'sports_centre':            ['recreation','education','entertainment'],
+    'sports_centre':            ['recreation','entertainment'],
     'stadium':                  ['entertainment'],
     'summer_camp':              ['recreation','education'],
     'swimming_pool':            ['recreation'],
@@ -367,8 +402,8 @@ var mapping = {
     'attraction':               ['entertainment'],
     'theme_park':               ['entertainment'],
     'viewpoint':                ['recreation'],
-    'museum':                   ['education','entertainment'],
-    'gallery':                  ['education','entertainment'],
+    'museum':                   ['culture'],
+    'gallery':                  ['culture'],
     'zoo':                      ['education','entertainment']
   }
 
