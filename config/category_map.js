@@ -117,7 +117,7 @@ var mapping = {
     'university':               ['education'],
     'public':                   ['government'],
 
-    'farm':                     ['industry','industry:agriculture'],
+    'farm':                     ['industry:agriculture'],
 
     'train_station':            ['transport','transport:station'],
     'transportation':           ['transport','transport:station']
@@ -235,6 +235,42 @@ var mapping = {
   'historic': {
     'archaeological_site':      ['education'],
     'monument':                 ['education']
+  },
+
+  'landuse': {
+    'farm':                     ['industry:agriculture'],
+    'farmland':                 ['industry:agriculture'],
+    'farmyard':                 ['industry:agriculture'],
+    'orchard':                  ['industry:agriculture'],
+    'vineyard':                 ['industry:agriculture'],
+    'plant_nursery':            ['industry:agriculture'],
+    'greenhouse_horticulture':  ['industry:agriculture'],
+    'animal_keeping':           ['industry:agriculture'],
+    'aquaculture':              ['industry:agriculture'],
+
+    'industrial':               ['industry'],
+    'quarry':                   ['industry'],
+    'landfill':                 ['industry'],
+
+    'commercial':               ['professional'],
+    'retail':                   ['retail'],
+
+    'forest':                   ['natural','recreation'],
+    'meadow':                   ['natural'],
+    'allotments':               ['recreation'],
+    'recreation_ground':        ['recreation'],
+    'village_green':            ['recreation'],
+    'winter_sports':            ['recreation'],
+    'fairground':               ['entertainment'],
+
+    'education':                ['education'],
+    'religious':                ['religion'],
+    'military':                 ['government:military','government'],
+
+    'railway':                  ['transport','transport:rail'],
+    'depot':                    ['transport'],
+    'harbour':                  ['transport','transport:sea'],
+    'port':                     ['transport','transport:sea']
   },
 
   'leisure': {
