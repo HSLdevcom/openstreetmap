@@ -38,7 +38,7 @@ var placePopularity = {
   suburb: 8,
   hamlet: 7,
   square: 6,
-  neighbourhood: 5,
+  neighbourhood: 6, // above natural features (10 * 0.5), which often share a name
   allotments: 5,
   quarter: 4,
   city_block: 3,
