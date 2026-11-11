@@ -317,7 +317,7 @@ var mapping = {
   'place': {
     'borough':         ['populated area'],
     'city':            ['populated area'],
-    'city block':      ['populated area'],
+    'city_block':      ['populated area'],
     'municipality':    ['populated area'],
     'neighbourhood':   ['populated area'],
     'quarter':         ['populated area'],
